@@ -1,313 +1,314 @@
+name=views/layout/sidebar.php
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-$current_page = $_GET['action'] ?? 'dashboard';
+// Admin Sidebar Navigation
+$currentUser = $_SESSION['user'] ?? null;
+$isAdmin = $currentUser && $currentUser['role'] === 'admin';
+
+// Get current action for active menu highlighting
+$currentAction = $_GET['action'] ?? 'dashboard';
 ?>
 
-<!-- Admin Sidebar -->
-<aside class="sidebar bg-dark p-0" style="height: 100vh; position: fixed; left: 0; top: 70px; width: 260px; overflow-y: auto; z-index: 999;">
-    
-    <!-- Sidebar Header -->
-    <div class="sidebar-header p-3 border-bottom border-secondary">
-        <h5 class="text-white mb-0 d-flex align-items-center">
-            <i class="fas fa-cog me-2 text-info"></i>
-            <span>Admin Panel</span>
-        </h5>
-    </div>
-
-    <!-- Sidebar Menu -->
-    <nav class="sidebar-menu p-3">
-        
-        <!-- Dashboard -->
-        <a href="<?php echo BASE_URL; ?>?action=dashboard" 
-           class="sidebar-item <?php echo $current_page === 'dashboard' ? 'active' : ''; ?>">
-            <i class="fas fa-home"></i>
-            <span>Dashboard</span>
-        </a>
-
-        <!-- ===== QUẢN LÝ TOUR ===== -->
-        <div class="sidebar-group">
-            <a href="#tourMenu" class="sidebar-item dropdown-toggle" data-bs-toggle="collapse" 
-               aria-expanded="<?php echo strpos($current_page, 'Tour') !== false ? 'true' : 'false'; ?>">
-                <i class="fas fa-map-location-dot"></i>
-                <span>Quản Lý Tour</span>
-                <i class="fas fa-chevron-down ms-auto"></i>
-            </a>
-            <div class="collapse <?php echo strpos($current_page, 'Tour') !== false ? 'show' : ''; ?>" id="tourMenu">
-                <a href="<?php echo BASE_URL; ?>?action=manageTours" 
-                   class="sidebar-item ps-5 <?php echo $current_page === 'manageTours' ? 'active' : ''; ?>">
-                    <i class="fas fa-list"></i>
-                    <span>Danh Sách Tours</span>
-                </a>
-                <a href="<?php echo BASE_URL; ?>?action=addTourForm" 
-                   class="sidebar-item ps-5 <?php echo $current_page === 'addTourForm' ? 'active' : ''; ?>">
-                    <i class="fas fa-plus"></i>
-                    <span>Thêm Tour Mới</span>
-                </a>
-                <a href="<?php echo BASE_URL; ?>?action=manageCategories" 
-                   class="sidebar-item ps-5 <?php echo $current_page === 'manageCategories' ? 'active' : ''; ?>">
-                    <i class="fas fa-tags"></i>
-                    <span>Danh Mục Tours</span>
-                </a>
-            </div>
-        </div>
-
-        <!-- ===== QUẢN LÝ ĐƠN ĐẶT ===== -->
-        <div class="sidebar-group">
-            <a href="#bookingMenu" class="sidebar-item dropdown-toggle" data-bs-toggle="collapse"
-               aria-expanded="<?php echo strpos($current_page, 'Booking') !== false ? 'true' : 'false'; ?>">
-                <i class="fas fa-ticket"></i>
-                <span>Quản Lý Đơn Đặt</span>
-                <i class="fas fa-chevron-down ms-auto"></i>
-            </a>
-            <div class="collapse <?php echo strpos($current_page, 'Booking') !== false ? 'show' : ''; ?>" id="bookingMenu">
-                <a href="<?php echo BASE_URL; ?>?action=manageBookings" 
-                   class="sidebar-item ps-5 <?php echo $current_page === 'manageBookings' ? 'active' : ''; ?>">
-                    <i class="fas fa-list"></i>
-                    <span>Danh Sách Đơn</span>
-                </a>
-                <a href="<?php echo BASE_URL; ?>?action=manageBookings&status=pending" 
-                   class="sidebar-item ps-5">
-                    <i class="fas fa-hourglass"></i>
-                    <span>Chờ Xác Nhận</span>
-                </a>
-                <a href="<?php echo BASE_URL; ?>?action=manageBookings&status=confirmed" 
-                   class="sidebar-item ps-5">
-                    <i class="fas fa-check-circle"></i>
-                    <span>Đã Xác Nhận</span>
-                </a>
-            </div>
-        </div>
-
-        <!-- ===== QUẢN LÝ THANH TOÁN ===== -->
-        <div class="sidebar-group">
-            <a href="#paymentMenu" class="sidebar-item dropdown-toggle" data-bs-toggle="collapse"
-               aria-expanded="<?php echo strpos($current_page, 'Payment') !== false ? 'true' : 'false'; ?>">
-                <i class="fas fa-credit-card"></i>
-                <span>Quản Lý Thanh Toán</span>
-                <i class="fas fa-chevron-down ms-auto"></i>
-            </a>
-            <div class="collapse <?php echo strpos($current_page, 'Payment') !== false ? 'show' : ''; ?>" id="paymentMenu">
-                <a href="<?php echo BASE_URL; ?>?action=managePayments" 
-                   class="sidebar-item ps-5 <?php echo $current_page === 'managePayments' ? 'active' : ''; ?>">
-                    <i class="fas fa-list"></i>
-                    <span>Lịch Sử Thanh Toán</span>
-                </a>
-                <a href="<?php echo BASE_URL; ?>?action=managePayments&status=success" 
-                   class="sidebar-item ps-5">
-                    <i class="fas fa-check"></i>
-                    <span>Thành Công</span>
-                </a>
-                <a href="<?php echo BASE_URL; ?>?action=managePayments&status=failed" 
-                   class="sidebar-item ps-5">
-                    <i class="fas fa-times"></i>
-                    <span>Thất Bại</span>
-                </a>
-            </div>
-        </div>
-
-        <!-- ===== QUẢN LÝ KHÁCH HÀNG ===== -->
-        <div class="sidebar-group">
-            <a href="#customerMenu" class="sidebar-item dropdown-toggle" data-bs-toggle="collapse"
-               aria-expanded="<?php echo strpos($current_page, 'Customer') !== false ? 'true' : 'false'; ?>">
-                <i class="fas fa-users"></i>
-                <span>Quản Lý Khách Hàng</span>
-                <i class="fas fa-chevron-down ms-auto"></i>
-            </a>
-            <div class="collapse <?php echo strpos($current_page, 'Customer') !== false ? 'show' : ''; ?>" id="customerMenu">
-                <a href="<?php echo BASE_URL; ?>?action=manageCustomers" 
-                   class="sidebar-item ps-5 <?php echo $current_page === 'manageCustomers' ? 'active' : ''; ?>">
-                    <i class="fas fa-list"></i>
-                    <span>Danh Sách Khách</span>
-                </a>
-                <a href="<?php echo BASE_URL; ?>?action=manageCustomers&status=active" 
-                   class="sidebar-item ps-5">
-                    <i class="fas fa-user-check"></i>
-                    <span>Đang Hoạt Động</span>
-                </a>
-                <a href="<?php echo BASE_URL; ?>?action=manageCustomers&status=blocked" 
-                   class="sidebar-item ps-5">
-                    <i class="fas fa-user-slash"></i>
-                    <span>Bị Chặn</span>
-                </a>
-            </div>
-        </div>
-
-        <!-- ===== QUẢN LÝ ĐÁNH GIÁ ===== -->
-        <div class="sidebar-group">
-            <a href="#reviewMenu" class="sidebar-item dropdown-toggle" data-bs-toggle="collapse"
-               aria-expanded="<?php echo strpos($current_page, 'Review') !== false ? 'true' : 'false'; ?>">
-                <i class="fas fa-star"></i>
-                <span>Quản Lý Đánh Giá</span>
-                <i class="fas fa-chevron-down ms-auto"></i>
-            </a>
-            <div class="collapse <?php echo strpos($current_page, 'Review') !== false ? 'show' : ''; ?>" id="reviewMenu">
-                <a href="<?php echo BASE_URL; ?>?action=manageReviews" 
-                   class="sidebar-item ps-5 <?php echo $current_page === 'manageReviews' ? 'active' : ''; ?>">
-                    <i class="fas fa-list"></i>
-                    <span>Danh Sách Đánh Giá</span>
-                </a>
-                <a href="<?php echo BASE_URL; ?>?action=manageReviews&status=pending" 
-                   class="sidebar-item ps-5">
-                    <i class="fas fa-hourglass"></i>
-                    <span>Chờ Duyệt</span>
-                </a>
-                <a href="<?php echo BASE_URL; ?>?action=manageReviews&status=approved" 
-                   class="sidebar-item ps-5">
-                    <i class="fas fa-check-circle"></i>
-                    <span>Đã Duyệt</span>
-                </a>
-            </div>
-        </div>
-
-        <!-- ===== QUẢN LÝ KHUYẾN MÃI ===== -->
-        <div class="sidebar-group">
-            <a href="#promotionMenu" class="sidebar-item dropdown-toggle" data-bs-toggle="collapse"
-               aria-expanded="<?php echo strpos($current_page, 'Promotion') !== false ? 'true' : 'false'; ?>">
-                <i class="fas fa-gift"></i>
-                <span>Quản Lý Khuyến Mãi</span>
-                <i class="fas fa-chevron-down ms-auto"></i>
-            </a>
-            <div class="collapse <?php echo strpos($current_page, 'Promotion') !== false ? 'show' : ''; ?>" id="promotionMenu">
-                <a href="<?php echo BASE_URL; ?>?action=managePromotions" 
-                   class="sidebar-item ps-5 <?php echo $current_page === 'managePromotions' ? 'active' : ''; ?>">
-                    <i class="fas fa-list"></i>
-                    <span>Danh Sách Khuyến Mãi</span>
-                </a>
-                <a href="<?php echo BASE_URL; ?>?action=savePromotion" 
-                   class="sidebar-item ps-5">
-                    <i class="fas fa-plus"></i>
-                    <span>Thêm Khuyến Mãi</span>
-                </a>
-            </div>
-        </div>
-
-        <hr class="bg-secondary my-3">
-
-        <!-- Settings -->
-        <a href="#" class="sidebar-item">
-            <i class="fas fa-sliders-h"></i>
-            <span>Cài Đặt</span>
-        </a>
-
-        <!-- Reports -->
-        <a href="#" class="sidebar-item">
-            <i class="fas fa-chart-bar"></i>
-            <span>Báo Cáo</span>
-        </a>
-
-    </nav>
-
-</aside>
-
-<!-- Styling for Sidebar -->
 <style>
     .sidebar {
-        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-        box-shadow: 2px 0 8px rgba(0,0,0,0.15);
-        scrollbar-width: thin;
-        scrollbar-color: #0066cc #1a1a2e;
-    }
-
-    .sidebar::-webkit-scrollbar {
-        width: 6px;
-    }
-
-    .sidebar::-webkit-scrollbar-track {
-        background: #1a1a2e;
-    }
-
-    .sidebar::-webkit-scrollbar-thumb {
-        background: #0066cc;
-        border-radius: 3px;
+        background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
+        min-height: 100vh;
+        padding-top: 20px;
+        position: sticky;
+        top: 0;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
     }
 
     .sidebar-header {
-        border-bottom: 2px solid #0066cc;
+        padding: 20px 15px;
+        border-bottom: 2px solid #00d4ff;
+        margin-bottom: 20px;
+    }
+
+    .sidebar-header h5 {
+        color: #00d4ff;
+        margin: 0;
+        font-weight: bold;
     }
 
     .sidebar-menu {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
+        list-style: none;
+        padding: 0;
+        margin: 0;
     }
 
-    .sidebar-item {
+    .sidebar-menu li {
+        margin-bottom: 0;
+    }
+
+    .sidebar-menu a {
         display: flex;
         align-items: center;
-        padding: 12px 15px;
+        padding: 12px 20px;
         color: #adb5bd;
         text-decoration: none;
-        border-radius: 6px;
         transition: all 0.3s ease;
-        gap: 10px;
-        font-size: 0.95rem;
+        border-left: 3px solid transparent;
     }
 
-    .sidebar-item i {
-        width: 20px;
-        text-align: center;
-    }
-
-    .sidebar-item:hover {
-        color: white;
-        background-color: rgba(0, 102, 204, 0.1);
-        padding-left: 20px;
-    }
-
-    .sidebar-item.active {
-        background-color: #0066cc;
-        color: white;
-        font-weight: 600;
-        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
-    }
-
-    .sidebar-item.active i {
+    .sidebar-menu a:hover {
+        background-color: rgba(0, 212, 255, 0.1);
         color: #00d4ff;
+        border-left-color: #00d4ff;
+        padding-left: 25px;
     }
 
-    .sidebar-group {
+    .sidebar-menu a.active {
+        background-color: rgba(0, 212, 255, 0.2);
+        color: #00d4ff;
+        border-left-color: #00d4ff;
+        font-weight: 600;
+    }
+
+    .sidebar-menu i {
+        width: 25px;
+        text-align: center;
+        margin-right: 12px;
+    }
+
+    .sidebar-section-title {
+        padding: 15px 20px 8px 20px;
+        font-size: 0.85rem;
+        color: #6c757d;
+        text-transform: uppercase;
+        font-weight: bold;
+        letter-spacing: 0.5px;
+        margin-top: 20px;
         margin-bottom: 5px;
     }
 
-    .sidebar-item.dropdown-toggle::after {
-        content: '';
+    .sidebar-submenu {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: none;
+        background-color: rgba(0, 0, 0, 0.1);
     }
 
-    .sidebar-item.dropdown-toggle .fa-chevron-down {
-        transition: transform 0.3s ease;
+    .sidebar-submenu.show {
+        display: block;
     }
 
-    .sidebar-item.dropdown-toggle[aria-expanded="true"] .fa-chevron-down {
-        transform: rotate(180deg);
+    .sidebar-submenu a {
+        padding-left: 50px;
+        font-size: 0.95rem;
     }
 
-    /* Main content adjustment */
-    main {
-        margin-left: 260px;
-        transition: margin-left 0.3s ease;
+    .sidebar-submenu a:hover,
+    .sidebar-submenu a.active {
+        background-color: rgba(0, 212, 255, 0.15);
+        color: #00d4ff;
     }
 
-    /* Mobile responsive */
+    .user-info {
+        padding: 15px 20px;
+        background-color: rgba(0, 212, 255, 0.1);
+        margin: 20px 15px;
+        border-radius: 8px;
+        border-left: 3px solid #00d4ff;
+    }
+
+    .user-info p {
+        margin: 0;
+        color: #adb5bd;
+        font-size: 0.9rem;
+    }
+
+    .user-info strong {
+        color: #00d4ff;
+    }
+
     @media (max-width: 768px) {
         .sidebar {
-            width: 0;
-            overflow: hidden;
-            transition: width 0.3s ease;
+            position: fixed;
+            left: -250px;
+            width: 250px;
+            transition: left 0.3s ease;
+            z-index: 1000;
         }
 
         .sidebar.show {
-            width: 260px;
+            left: 0;
         }
 
-        main {
-            margin-left: 0;
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
         }
 
-        .sidebar-item {
-            padding: 15px 20px;
-            font-size: 1rem;
+        .sidebar-overlay.show {
+            display: block;
         }
     }
 </style>
+
+<?php if ($isAdmin): ?>
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <!-- Sidebar Header -->
+    <div class="sidebar-header">
+        <h5><i class="fas fa-tachometer-alt"></i> Admin Panel</h5>
+    </div>
+
+    <!-- User Info -->
+    <div class="user-info">
+        <p><strong><?php echo htmlspecialchars($currentUser['username'] ?? 'Admin'); ?></strong></p>
+        <p><?php echo htmlspecialchars($currentUser['email'] ?? 'admin@tour.com'); ?></p>
+    </div>
+
+    <!-- Menu Items -->
+    <ul class="sidebar-menu">
+        <!-- Dashboard -->
+        <li>
+            <a href="index.php?action=dashboard" 
+               class="<?php echo $currentAction === 'dashboard' ? 'active' : ''; ?>">
+                <i class="fas fa-chart-line"></i> Dashboard
+            </a>
+        </li>
+
+        <!-- Tour Management -->
+        <li class="sidebar-section-title">QUẢN LÝ NỘI DUNG</li>
+        <li>
+            <a href="index.php?action=manageTours" 
+               class="<?php echo in_array($currentAction, ['manageTours', 'addTourForm', 'editTourForm']) ? 'active' : ''; ?}"
+               onclick="toggleSubmenu(event, 'tourMenu')">
+                <i class="fas fa-map"></i> Tours
+                <span class="ms-auto"><i class="fas fa-chevron-down"></i></span>
+            </a>
+            <ul class="sidebar-submenu" id="tourMenu">
+                <li>
+                    <a href="index.php?action=manageTours" 
+                       class="<?php echo $currentAction === 'manageTours' ? 'active' : ''; ?>">
+                        <i class="fas fa-list"></i> Danh Sách Tours
+                    </a>
+                </li>
+                <li>
+                    <a href="index.php?action=addTourForm">
+                        <i class="fas fa-plus"></i> Thêm Tour Mới
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <!-- Categories -->
+        <li>
+            <a href="index.php?action=manageCategories"
+               class="<?php echo $currentAction === 'manageCategories' ? 'active' : ''; ?>">
+                <i class="fas fa-list"></i> Loại Tour
+            </a>
+        </li>
+
+        <!-- Promotions -->
+        <li>
+            <a href="index.php?action=managePromotions"
+               class="<?php echo $currentAction === 'managePromotions' ? 'active' : ''; ?>">
+                <i class="fas fa-tag"></i> Khuyến Mãi
+            </a>
+        </li>
+
+        <!-- Booking & Payment -->
+        <li class="sidebar-section-title">ĐƠN HÀNG & THANH TOÁN</li>
+        <li>
+            <a href="index.php?action=manageBookings"
+               class="<?php echo $currentAction === 'manageBookings' ? 'active' : ''; ?}"
+               onclick="toggleSubmenu(event, 'bookingMenu')">
+                <i class="fas fa-clipboard-list"></i> Booking
+                <span class="ms-auto"><i class="fas fa-chevron-down"></i></span>
+            </a>
+            <ul class="sidebar-submenu" id="bookingMenu">
+                <li>
+                    <a href="index.php?action=manageBookings">
+                        <i class="fas fa-list"></i> Danh Sách Booking
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <li>
+            <a href="index.php?action=managePayments"
+               class="<?php echo $currentAction === 'managePayments' ? 'active' : ''; ?>">
+                <i class="fas fa-credit-card"></i> Thanh Toán
+            </a>
+        </li>
+
+        <!-- User Management -->
+        <li class="sidebar-section-title">QUẢN LÝ NGƯỜI DÙNG</li>
+        <li>
+            <a href="index.php?action=manageCustomers"
+               class="<?php echo $currentAction === 'manageCustomers' ? 'active' : ''; ?}"
+               onclick="toggleSubmenu(event, 'customerMenu')">
+                <i class="fas fa-users"></i> Khách Hàng
+                <span class="ms-auto"><i class="fas fa-chevron-down"></i></span>
+            </a>
+            <ul class="sidebar-submenu" id="customerMenu">
+                <li>
+                    <a href="index.php?action=manageCustomers">
+                        <i class="fas fa-list"></i> Danh Sách Khách
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <!-- Reviews -->
+        <li>
+            <a href="index.php?action=manageReviews"
+               class="<?php echo $currentAction === 'manageReviews' ? 'active' : ''; ?>">
+                <i class="fas fa-star"></i> Đánh Giá
+            </a>
+        </li>
+
+        <!-- Reports -->
+        <li class="sidebar-section-title">BÁO CÁO & THỐNG KÊ</li>
+        <li>
+            <a href="index.php?action=reports" style="opacity: 0.6;">
+                <i class="fas fa-chart-bar"></i> Báo Cáo
+            </a>
+        </li>
+
+        <!-- Settings -->
+        <li class="sidebar-section-title">CẤU HÌNH</li>
+        <li>
+            <a href="index.php?action=settings" style="opacity: 0.6;">
+                <i class="fas fa-cog"></i> Cài Đặt
+            </a>
+        </li>
+    </ul>
+</div>
+
+<!-- Sidebar Overlay (Mobile) -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<script>
+    function toggleSubmenu(event, menuId) {
+        event.preventDefault();
+        const submenu = document.getElementById(menuId);
+        if (submenu) {
+            submenu.classList.toggle('show');
+        }
+    }
+
+    function toggleSidebar() {
+        const sidebar = document.querySelector('.sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        sidebar.classList.toggle('show');
+        overlay.classList.toggle('show');
+    }
+
+    // Show submenu if current page is in submenu
+    document.querySelectorAll('.sidebar-submenu a').forEach(link => {
+        if (link.classList.contains('active')) {
+            link.parentElement.parentElement.classList.add('show');
+        }
+    });
+</script>
+<?php endif; ?>
